@@ -1,5 +1,5 @@
 <br />
-<div align="center">>
+<div align="center">
     <img src="assets/img/logo.png" alt="Logo" width="80" height="80">
   <h3 align="center" style="font-size:35px">EasyTube</h3>
 
