@@ -1,9 +1,6 @@
 <br />
-<div align="center">
-  <a href="https://github.com/othneildrew/Best-README-Template">
+<div align="center">>
     <img src="assets/img/logo.png" alt="Logo" width="80" height="80">
-  </a>
-
   <h3 align="center" style="font-size:35px">EasyTube</h3>
 
   <p align="center">
