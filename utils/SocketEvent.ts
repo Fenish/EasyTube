@@ -3,3 +3,10 @@ export enum SocketEvent {
   down = "down",
   new_count = "new_count",
 }
+
+export enum ConvertProgress {
+  converting = "converting",
+  converted = "converted",
+  reset = "reset",
+  current_progress = "current_progress",
+}
