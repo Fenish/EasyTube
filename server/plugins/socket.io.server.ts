@@ -1,22 +1,27 @@
 import { Server } from "socket.io";
 
-let count = 10;
-export default defineNitroPlugin((nitroApp) => {
+export default defineNitroPlugin(() => {
   const socketServer = new Server(useRuntimeConfig().public.socketPort, {
     serveClient: false,
     cors: {
       origin: "*",
     },
   });
+
   socketServer.on("connection", (socket) => {
-    socket.emit(SocketEvent.new_count, count);
-    socket.on(SocketEvent.up, (message: { value: number }) => {
-      count += message.value;
-      socketServer.emit(SocketEvent.new_count, count);
+    let progress = 0;
+    socket.emit(ConvertProgress.current_progress, progress);
+    socket.on(ConvertProgress.reset, () => {
+      progress = 0;
+      socket.emit(ConvertProgress.current_progress, progress);
     });
-    socket.on(SocketEvent.down, (message: { value: number }) => {
-      count -= message.value;
-      socketServer.emit(SocketEvent.new_count, count);
+    socket.on(ConvertProgress.converting, (message: { value: number }) => {
+      progress += message.value;
+      if (progress >= 101) {
+        socket.emit(ConvertProgress.converted, "Done!");
+      } else {
+        socket.emit(ConvertProgress.current_progress, progress);
+      }
     });
   });
 
