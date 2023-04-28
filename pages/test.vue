@@ -11,16 +11,12 @@ if (process.client) {
   $io.connect();
 }
 
-$io.on(SocketEvent.new_count, (message) => {
+$io.on(ConvertProgress.current_progress, (message) => {
   state.counter = message;
 });
 
 function up() {
-  $io.emit(SocketEvent.up, { value: 1 });
-}
-
-function down() {
-  $io.emit(SocketEvent.down, { value: 1 });
+  $io.emit(ConvertProgress.converting, { value: 1 });
 }
 </script>
 <template>
@@ -40,7 +36,7 @@ function down() {
           Up
         </button>
         <button
-          @click="down"
+          @click="up"
           class="p-3 border-2 border-black ml-10 mt-10 bg-red-300"
         >
           down

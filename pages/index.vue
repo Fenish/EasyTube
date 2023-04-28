@@ -3,6 +3,8 @@ const { $io } = useNuxtApp();
 if (process.client) {
   $io.connect();
 }
+
+console.log($io);
 useHead(() => ({
   title: "EasyTube - Youtube Converter",
   meta: [
@@ -20,24 +22,28 @@ useHead(() => ({
 const videoUrl = ref("");
 const videoFormat = ref("MP3");
 const barWidth = ref(0);
-$io.on(SocketEvent.new_count, (message) => {
-  barWidth.value = message;
-});
-function delay(time: number) {
-  return new Promise((resolve) => setTimeout(resolve, time));
-}
+const barVisibility = ref(false);
 
 async function convert() {
-  barWidth.value = 0;
+  $io.emit(ConvertProgress.reset);
   console.log(videoUrl.value, videoFormat.value);
   let interval = setInterval(() => {
     if (barWidth.value === 100) {
       clearInterval(interval);
     } else {
-      barWidth.value++;
+      $io.emit(ConvertProgress.converting, { value: 1 });
     }
   }, 50);
 }
+$io.on(ConvertProgress.current_progress, (message) => {
+  console.log(message);
+  barWidth.value = message;
+  if (barWidth.value > 0) {
+    barVisibility.value = true;
+  } else {
+    barVisibility.value = false;
+  }
+});
 </script>
 
 <template>
@@ -101,7 +107,7 @@ async function convert() {
           </div>
         </div>
       </div>
-      <div class="flex w-full mt-4 px-10">
+      <div class="flex w-full mt-4 px-10" v-if="barVisibility">
         <div class="w-full bg-gray-700 rounded-full">
           <div
             class="bg-purple-500 text-xs font-medium text-blue-100 text-center p-0.5 leading-none rounded-full"
