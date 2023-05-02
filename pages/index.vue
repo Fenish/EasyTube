@@ -24,16 +24,10 @@ const barVisibility = ref(false);
 const convertingStatus = ref(false);
 let converted = false;
 
-const video = {
-  title: "",
-  thumbnail: "",
-  format: "",
-};
+let video = {};
 
 async function convert() {
-  video.title = "";
-  video.thumbnail = "";
-  video.format = "";
+  video = {};
   convertingStatus.value = true;
   $io.emit(VideoEvents.get_data, {
     url: videoUrl.value,
@@ -41,10 +35,8 @@ async function convert() {
 }
 
 $io.on(VideoEvents.video_info, (data) => {
+  video = data;
   convertingStatus.value = false;
-  video.title = data.videoDetails.title;
-  video.thumbnail = `https://i.ytimg.com/vi/${data.videoDetails.videoId}/maxresdefault.jpg`;
-  video.format = videoFormat.value;
 });
 </script>
 
@@ -81,7 +73,7 @@ $io.on(VideoEvents.video_info, (data) => {
               <input
                 type="text"
                 id="default-input"
-                class="bg-zinc-700 text-white w-full text-lg p-3 pl-14 pr-5 outline-none"
+                class="bg-zinc-700 text-white w-full text-lg p-3 pl-14 pr-5 outline-none select-none"
                 placeholder="Enter youtube link"
                 autocomplete="off"
                 v-model="videoUrl"
@@ -94,7 +86,7 @@ $io.on(VideoEvents.video_info, (data) => {
             <div>
               <select
                 id="formats"
-                class="outline-none p-3 px-6 bg-gray-600 text-white rounded-none text-lg"
+                class="outline-none p-3 px-6 bg-gray-600 text-white rounded-none text-lg select-none"
                 ,
                 v-model="videoFormat"
                 :class="convertingStatus ? 'querying' : ''"
@@ -105,7 +97,7 @@ $io.on(VideoEvents.video_info, (data) => {
               </select>
             </div>
             <button
-              class="bg-purple-500 p-3 px-7 text-white text-md font-medium grow"
+              class="bg-purple-500 p-3 px-7 text-white text-md font-medium grow select-none"
               @click="convert"
               :class="convertingStatus ? 'querying' : ''"
               :disabled="convertingStatus"
@@ -120,12 +112,8 @@ $io.on(VideoEvents.video_info, (data) => {
       </div>
     </div>
 
-    <div class="flex mt-10" v-if="video['title'] != ''">
-      <VideoInfo
-        :title="video.title"
-        :thumbnail="video.thumbnail"
-        :format="video.format"
-      />
+    <div class="flex mt-5" v-if="Object.keys(video).length !== 0">
+      <VideoInfo :data="video" :format="videoFormat" />
     </div>
   </div>
 </template>
