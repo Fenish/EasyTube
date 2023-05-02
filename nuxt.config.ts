@@ -6,7 +6,7 @@ export default defineNuxtConfig({
       socketUrl: process.env.SOCKET_URL || "http://localhost",
     },
   },
-  modules: ["@nuxtjs/tailwindcss", "@nuxtjs/google-fonts"],
+  modules: ["@nuxtjs/tailwindcss", "@nuxtjs/google-fonts", "nuxt-icon"],
   googleFonts: {
     families: {
       Pacifico: true,
