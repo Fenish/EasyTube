@@ -1,12 +1,8 @@
 <script setup lang="ts">
-function wait(ms: number): Promise<void> {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve();
-    }, ms);
-  });
+const { $io } = useNuxtApp();
+if (process.client) {
+  $io.connect();
 }
-
 useHead(() => ({
   title: "EasyTube - Youtube Converter",
   meta: [
@@ -25,38 +21,31 @@ const videoUrl = ref("");
 const videoFormat = ref("MP3");
 const barWidth = ref(0);
 const barVisibility = ref(false);
+const convertingStatus = ref(false);
 let converted = false;
 
-async function fakeProgress() {
-  barWidth.value = 0;
-  let count = 0;
-  let increment = 0;
-  while (count < 80 && (count += increment) < 80) {
-    if (converted) break;
-    increment = Math.floor(Math.random() * 4);
-    count += increment;
-    barWidth.value = Math.round(count);
-    await wait(300);
-  }
-  while (count >= 80 && count <= 99) {
-    if (converted) break;
-    increment = Math.floor(Math.random() * 2);
-    count += increment;
-    barWidth.value = Math.round(count);
-    await wait(500);
-  }
-}
+const video = {
+  title: "",
+  thumbnail: "",
+  format: "",
+};
 
 async function convert() {
-  converted = false;
-  barVisibility.value = true;
-  barWidth.value = 0;
-  await fakeProgress();
-  useFetch("/api/convert?&url=" + videoUrl.value).then(() => {
-    converted = true;
-    barWidth.value = 100;
+  video.title = "";
+  video.thumbnail = "";
+  video.format = "";
+  convertingStatus.value = true;
+  $io.emit(VideoEvents.get_data, {
+    url: videoUrl.value,
   });
 }
+
+$io.on(VideoEvents.video_info, (data) => {
+  convertingStatus.value = false;
+  video.title = data.videoDetails.title;
+  video.thumbnail = `https://i.ytimg.com/vi/${data.videoDetails.videoId}/maxresdefault.jpg`;
+  video.format = videoFormat.value;
+});
 </script>
 
 <template>
@@ -96,6 +85,8 @@ async function convert() {
                 placeholder="Enter youtube link"
                 autocomplete="off"
                 v-model="videoUrl"
+                :class="convertingStatus ? 'querying' : ''"
+                :disabled="convertingStatus"
               />
             </div>
           </div>
@@ -106,6 +97,8 @@ async function convert() {
                 class="outline-none p-3 px-6 bg-gray-600 text-white rounded-none text-lg"
                 ,
                 v-model="videoFormat"
+                :class="convertingStatus ? 'querying' : ''"
+                :disabled="convertingStatus"
               >
                 <option selected="true">MP3</option>
                 <option value="mp4">MP4</option>
@@ -114,6 +107,8 @@ async function convert() {
             <button
               class="bg-purple-500 p-3 px-7 text-white text-md font-medium grow"
               @click="convert"
+              :class="convertingStatus ? 'querying' : ''"
+              :disabled="convertingStatus"
             >
               Convert
             </button>
@@ -121,17 +116,23 @@ async function convert() {
         </div>
       </div>
       <div class="flex w-full mt-4 px-10" v-if="barVisibility">
-        <div class="w-full bg-gray-700 rounded-full">
-          <div
-            class="bg-purple-500 text-xs font-medium text-blue-100 text-center p-0.5 leading-none rounded-full transition-all duration-500 ease-in-out"
-            :style="`width: ${barWidth}%`"
-          >
-            {{ barWidth }}%
-          </div>
-        </div>
+        <ProgressBar :bar-width="barWidth" />
       </div>
     </div>
 
-    <div class="flex"></div>
+    <div class="flex mt-10" v-if="video['title'] != ''">
+      <VideoInfo
+        :title="video.title"
+        :thumbnail="video.thumbnail"
+        :format="video.format"
+      />
+    </div>
   </div>
 </template>
+
+<style scoped>
+.querying {
+  cursor: not-allowed;
+  color: rgba(255, 255, 255, 0.308);
+}
+</style>
