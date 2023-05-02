@@ -13,4 +13,8 @@ export default defineNuxtConfig({
       "Titillium Web": [200, 300, 400, 600, 700, 900],
     },
   },
+  plugins: ["./plugins/socket.io"],
+  nitro: {
+    plugins: ["./plugins/socket.io.server"],
+  },
 });
