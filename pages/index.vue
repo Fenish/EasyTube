@@ -93,7 +93,7 @@ $io.on(VideoEvents.video_info, (data) => {
                 :disabled="convertingStatus"
               >
                 <option selected="true">MP3</option>
-                <option value="mp4">MP4</option>
+                <option value="MP4">MP4</option>
               </select>
             </div>
             <button
@@ -106,9 +106,6 @@ $io.on(VideoEvents.video_info, (data) => {
             </button>
           </div>
         </div>
-      </div>
-      <div class="flex w-full mt-4 px-10" v-if="barVisibility">
-        <ProgressBar :bar-width="barWidth" />
       </div>
     </div>
 
