@@ -11,7 +11,6 @@ export default defineNitroPlugin(async () => {
   });
   server.on("connection", (socket) => {
     socket.on(VideoEvents.get_data, async (message: { url: string }) => {
-      console.log(`Event emitted: ${VideoEvents.get_data}`);
       const video = await ytdl.getInfo(message.url);
       socket.emit(VideoEvents.video_info, video);
     });
