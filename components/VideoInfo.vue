@@ -1,4 +1,6 @@
 <script setup lang="ts">
+const { $io } = useNuxtApp();
+
 const props = defineProps({
   data: {
     type: Object,
@@ -9,8 +11,29 @@ const props = defineProps({
     required: true,
   },
 });
+
+if (process.client) {
+  $io.connect();
+}
+
+// Variables
+
 const videoData = props.data;
-console.log(videoData);
+const progressValue = ref(0);
+const isConverted = ref(false);
+
+// Watchers
+
+$io.on(ProgressEvents.progress_status, (data) => {
+  progressValue.value = data;
+});
+
+$io.emit(VideoEvents.start_download, {
+  url: videoData.videoDetails.video_url,
+  format: props.format,
+});
+
+// Functions
 
 function formatTime(totalSeconds: number): string {
   let hours: number = Math.floor(totalSeconds / 3600);
@@ -34,15 +57,17 @@ function formatNumber(num: number) {
   }
   return num ? num : 0;
 }
+
+function download() {}
 </script>
 
 <template>
   <div class="flex flex-col">
     <div
-      class="flex flex-col bg-zinc-800 border-zinc-700 border-2 select-none rounded-sm w-72 md:w-[500px]"
+      class="flex flex-col bg-zinc-800 border-zinc-700 border-2 rounded-sm w-72 md:w-[500px]"
     >
       <img
-        class="w-full h-auto mx-auto"
+        class="w-full h-auto mx-auto select-none"
         :src="`https://i.ytimg.com/vi/${videoData.videoDetails.videoId}/maxresdefault.jpg`"
         :alt="videoData.videoDetails.title"
         draggable="false"
@@ -91,7 +116,8 @@ function formatNumber(num: number) {
             </div>
             <div class="flex pb-2 w-full justify-end">
               <button
-                class="bg-violet-500 text-white px-5 py-2 rounded-md w-full mt-3 md:mt-0 md:w-auto"
+                class="bg-violet-500 text-white px-5 py-2 rounded-md w-full mt-3 md:mt-0 md:w-auto select-none"
+                @click="download"
               >
                 Download {{ format }}
               </button>
@@ -99,7 +125,7 @@ function formatNumber(num: number) {
           </div>
         </div>
       </div>
-      <ProgressBar :barWidth="0" />
+      <ProgressBar :barWidth="progressValue" />
     </div>
   </div>
 </template>
