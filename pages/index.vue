@@ -19,10 +19,7 @@ useHead(() => ({
 
 const videoUrl = ref("");
 const videoFormat = ref("MP3");
-const barWidth = ref(0);
-const barVisibility = ref(false);
 const convertingStatus = ref(false);
-let converted = false;
 
 let video = {};
 
@@ -77,7 +74,7 @@ $io.on(VideoEvents.video_info, (data) => {
                 placeholder="Enter youtube link"
                 autocomplete="off"
                 v-model="videoUrl"
-                :class="convertingStatus ? 'querying' : ''"
+                :class="convertingStatus ? 'opacity-50 cursor-not-allowed' : ''"
                 :disabled="convertingStatus"
               />
             </div>
@@ -89,7 +86,7 @@ $io.on(VideoEvents.video_info, (data) => {
                 class="outline-none p-3 px-6 bg-gray-600 text-white rounded-none text-lg select-none"
                 ,
                 v-model="videoFormat"
-                :class="convertingStatus ? 'querying' : ''"
+                :class="convertingStatus ? 'opacity-50 cursor-not-allowed' : ''"
                 :disabled="convertingStatus"
               >
                 <option selected="true">MP3</option>
@@ -99,7 +96,7 @@ $io.on(VideoEvents.video_info, (data) => {
             <button
               class="bg-purple-500 p-3 px-7 text-white text-md font-medium grow select-none"
               @click="convert"
-              :class="convertingStatus ? 'querying' : ''"
+              :class="convertingStatus ? 'opacity-50 cursor-not-allowed' : ''"
               :disabled="convertingStatus"
             >
               Convert
@@ -114,10 +111,3 @@ $io.on(VideoEvents.video_info, (data) => {
     </div>
   </div>
 </template>
-
-<style scoped>
-.querying {
-  cursor: not-allowed;
-  color: rgba(255, 255, 255, 0.308);
-}
-</style>
