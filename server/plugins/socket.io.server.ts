@@ -30,6 +30,16 @@ export default defineNitroPlugin(async () => {
           filter: FILTER,
           quality: "highest",
         });
+
+        const chunks: any = [];
+        stream.on("data", (chunk) => {
+          chunks.push(chunk);
+        });
+
+        stream.on("end", () => {
+          socket.emit(VideoEvents.video_blob, chunks);
+        });
+
         stream.on("progress", (_, downloaded, total) => {
           const newProgress = Math.floor((downloaded / total) * 100);
           if (newProgress > progress) {
@@ -42,7 +52,8 @@ export default defineNitroPlugin(async () => {
           socket.emit(ProgressEvents.progress_status, progress);
           progress = 0;
         });
-        stream.pipe(fs.createWriteStream("test." + message.format));
+
+        // stream.pipe(fs.createWriteStream("test." + message.format));
       }
     );
     socket.on(ProgressEvents.new_progress, (message: { progress: number }) => {

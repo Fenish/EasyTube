@@ -18,7 +18,8 @@ if (process.client) {
 
 // Variables
 
-const videoData = props.data;
+const fileName = ref("");
+const downloadData = ref("#");
 const progressValue = ref(0);
 const isConverted = ref(false);
 
@@ -29,8 +30,22 @@ $io.on(ProgressEvents.progress_status, (data) => {
 });
 
 $io.emit(VideoEvents.start_download, {
-  url: videoData.videoDetails.video_url,
+  url: props.data.videoDetails.video_url,
   format: props.format,
+});
+
+$io.on(VideoEvents.video_blob, (data) => {
+  let BLOBTYPE: "video/mp4" | "audio/mp3" = "video/mp4";
+  if (props.format.toLowerCase() === "mp3") {
+    BLOBTYPE = "audio/mp3";
+  }
+  const blob = new Blob(data, { type: BLOBTYPE });
+  const url = URL.createObjectURL(blob);
+  downloadData.value = url;
+  fileName.value = `${
+    props.data.videoDetails.title
+  } - EasyTube.${props.format.toLowerCase()}`;
+  isConverted.value = true;
 });
 
 // Functions
@@ -68,21 +83,21 @@ function download() {}
     >
       <img
         class="w-full h-auto mx-auto select-none"
-        :src="`https://i.ytimg.com/vi/${videoData.videoDetails.videoId}/maxresdefault.jpg`"
-        :alt="videoData.videoDetails.title"
+        :src="`https://i.ytimg.com/vi/${$props.data.videoDetails.videoId}/maxresdefault.jpg`"
+        :alt="$props.data.videoDetails.title"
         draggable="false"
       />
       <div class="py-3 px-10 text-left space-y-4">
         <div class="flex flex-col">
           <a class="font-medium text-white">
-            {{ videoData.videoDetails.title }}
+            {{ $props.data.videoDetails.title }}
           </a>
           <a
             class="text-violet-400 hover:text-violet-300"
-            :href="videoData.videoDetails.author.channel_url"
+            :href="$props.data.videoDetails.author.channel_url"
             target="_blank"
           >
-            {{ videoData.videoDetails.ownerChannelName }}
+            {{ $props.data.videoDetails.ownerChannelName }}
           </a>
           <div class="flex items-center">
             <Icon
@@ -90,7 +105,7 @@ function download() {}
               class="text-zinc-500 w-5 h-5 mr-1"
             />
             <a class="text-zinc-500">
-              {{ formatTime(videoData.videoDetails.lengthSeconds) }}
+              {{ formatTime($props.data.videoDetails.lengthSeconds) }}
             </a>
           </div>
           <div class="flex mt-4 flex-col md:flex-row">
@@ -101,7 +116,7 @@ function download() {}
                   class="text-zinc-500 w-5 h-5 mr-1"
                 />
                 <a class="text-zinc-500">
-                  {{ formatNumber(videoData.videoDetails.viewCount) }}
+                  {{ formatNumber($props.data.videoDetails.viewCount) }}
                 </a>
               </div>
               <div class="flex items-center">
@@ -110,17 +125,21 @@ function download() {}
                   class="text-zinc-500 w-5 h-5 mr-1"
                 />
                 <a class="text-zinc-500">
-                  {{ formatNumber(videoData.videoDetails.likes) }}
+                  {{ formatNumber($props.data.videoDetails.likes) }}
                 </a>
               </div>
             </div>
             <div class="flex pb-2 w-full justify-end">
-              <button
-                class="bg-violet-500 text-white px-5 py-2 rounded-md w-full mt-3 md:mt-0 md:w-auto select-none"
-                @click="download"
-              >
-                Download {{ format }}
-              </button>
+              <a :href="downloadData" :download="fileName">
+                <button
+                  class="bg-violet-500 text-white px-5 py-2 rounded-md w-full mt-3 md:mt-0 md:w-auto select-none"
+                  @click="download"
+                  :disabled="!isConverted"
+                  :class="!isConverted ? 'opacity-50 cursor-not-allowed' : ''"
+                >
+                  Download {{ format }}
+                </button>
+              </a>
             </div>
           </div>
         </div>
