@@ -1,7 +1,5 @@
 import { Server } from "socket.io";
 import ytdl from "@distube/ytdl-core";
-import fs from "fs";
-import path from "path";
 
 export default defineNitroPlugin(async () => {
   const config = useRuntimeConfig().public;
@@ -31,7 +29,7 @@ export default defineNitroPlugin(async () => {
           quality: "highest",
         });
 
-        const chunks: any = [];
+        const chunks: Buffer[] = [];
         stream.on("data", (chunk) => {
           chunks.push(chunk);
         });
@@ -52,8 +50,6 @@ export default defineNitroPlugin(async () => {
           socket.emit(ProgressEvents.progress_status, progress);
           progress = 0;
         });
-
-        // stream.pipe(fs.createWriteStream("test." + message.format));
       }
     );
     socket.on(ProgressEvents.new_progress, (message: { progress: number }) => {
