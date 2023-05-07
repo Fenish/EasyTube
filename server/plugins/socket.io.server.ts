@@ -3,7 +3,7 @@ import ytdl from "@distube/ytdl-core";
 
 export default defineNitroPlugin(async () => {
   const config = useRuntimeConfig().public;
-  const server = new Server(config.socketPort, {
+  const server = new Server(config.socketIOPort, {
     serveClient: false,
     cors: {
       origin: "*",
