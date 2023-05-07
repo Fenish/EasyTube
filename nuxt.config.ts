@@ -6,7 +6,12 @@ export default defineNuxtConfig({
       socketUrl: process.env.SOCKET_URL || "http://localhost",
     },
   },
-  modules: ["@nuxtjs/tailwindcss", "@nuxtjs/google-fonts", "nuxt-icon"],
+  modules: [
+    "@nuxtjs/tailwindcss",
+    "@nuxtjs/google-fonts",
+    "nuxt-icon",
+    "nuxt-security",
+  ],
   googleFonts: {
     families: {
       Pacifico: true,
@@ -16,5 +21,10 @@ export default defineNuxtConfig({
   plugins: ["./plugins/socket.io"],
   nitro: {
     plugins: ["@/socket/socket.io.server"],
+  },
+  security: {
+    headers: {
+      contentSecurityPolicy: false,
+    },
   },
 });
