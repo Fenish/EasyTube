@@ -15,6 +15,6 @@ export default defineNuxtConfig({
   },
   plugins: ["./plugins/socket.io"],
   nitro: {
-    plugins: ["./plugins/socket.io.server"],
+    plugins: ["@/socket/socket.io.server"],
   },
 });
