@@ -2,7 +2,7 @@
 export default defineNuxtConfig({
   runtimeConfig: {
     public: {
-      socketIOPort: process.env.SOCKET_PORT || 3001,
+      socketPort: 3001,
       socketUrl: process.env.SOCKET_URL || "http://localhost",
     },
   },
