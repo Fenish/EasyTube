@@ -70,10 +70,10 @@ I built this project with following technologies
 
 <br>
 
-`if you want to run spesific port then run this command`
+# Running Production
 
 ```
-NITRO_PORT=8080 SOCKET_PORT=3001  node .output/server/index.mjs
+NITRO_PORT=8080 NODE_ENV=production node .output/server/index.mjs
 ```
 
 # Screenshots
