@@ -33,15 +33,6 @@ I built this project with following technologies
 
 <br>
 
-### Prerequisites
-
-- npm
-  ```sh
-  npm install npm@latest -g
-  ```
-
-<br>
-
 ### Installation
 
 1. Clone the repo
@@ -76,6 +67,14 @@ I built this project with following technologies
      ```sh
      npm run build
      ```
+
+<br>
+
+`if you want to run spesific port then run this command`
+
+```
+NITRO_PORT=8080 SOCKET_PORT=3001  node .output/server/index.mjs
+```
 
 # Screenshots
 
