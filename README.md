@@ -73,7 +73,7 @@ I built this project with following technologies
 # Running Production
 
 ```
-NITRO_PORT=8080 NODE_ENV=production node .output/server/index.mjs
+NITRO_PORT=80 NODE_ENV=production node .output/server/index.mjs
 ```
 
 # Screenshots
