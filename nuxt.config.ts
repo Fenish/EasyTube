@@ -2,8 +2,7 @@
 export default defineNuxtConfig({
   runtimeConfig: {
     public: {
-      socketPort: 3001,
-      socketUrl: process.env.SOCKET_URL || "http://localhost",
+      socketUrl: process.env.SOCKET_URL || "http://localhost:3000",
     },
   },
   modules: [
@@ -19,9 +18,6 @@ export default defineNuxtConfig({
     },
   },
   plugins: ["./plugins/socket.io"],
-  nitro: {
-    plugins: ["@/socket/socket.io.server"],
-  },
   security: {
     headers: {
       contentSecurityPolicy: false,
