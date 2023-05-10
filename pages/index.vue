@@ -19,12 +19,16 @@ useHead(() => ({
 
 const videoUrl = ref("");
 const videoFormat = ref("MP3");
+const errorState = ref(false);
+const errorMessage = ref("");
 const convertingStatus = ref(false);
 
 let video = {};
 
 async function convert() {
   video = {};
+  errorState.value = false;
+  errorMessage.value = "";
   convertingStatus.value = true;
   $io.emit(VideoEvents.get_data, {
     url: videoUrl.value,
@@ -33,6 +37,10 @@ async function convert() {
 
 $io.on(VideoEvents.video_info, (data) => {
   video = data;
+  if (data.error) {
+    errorState.value = true;
+    errorMessage.value = data.error;
+  }
   convertingStatus.value = false;
 });
 </script>
@@ -105,8 +113,10 @@ $io.on(VideoEvents.video_info, (data) => {
         </div>
       </div>
     </div>
-
-    <div class="flex mt-5" v-if="Object.keys(video).length !== 0">
+    <div class="mt-3" v-if="errorState">
+      <a class="text-red-400 select-none">{{ errorMessage }}</a>
+    </div>
+    <div class="flex mt-5" v-if="Object.keys(video).length > 1">
       <VideoInfo :data="video" :format="videoFormat" />
     </div>
   </div>

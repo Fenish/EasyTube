@@ -2,7 +2,7 @@ import io from "socket.io-client";
 
 export default defineNuxtPlugin(() => {
   const config = useRuntimeConfig().public;
-  const socket = io(config.socketUrl, {
+  const socket = io(config.SOCKET_URL, {
     autoConnect: true,
   });
 
