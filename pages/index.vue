@@ -9,7 +9,13 @@ useHead(() => ({
     {
       hid: "description",
       name: "description",
-      content: "Easy youtube converter to mp3 and mp4",
+      content:
+        "Easy youtube converter to mp3 and mp4 online. No ads, no popups. Just convert your youtube videos to mp3 and mp4. EasyTube is the best youtube converter online for free.",
+    },
+    {
+      id: "og:image",
+      property: "og:image",
+      content: useRuntimeConfig().public.BASE_URL + "/_nuxt/logo.a014029a.png",
     },
   ],
   htmlAttrs: {
