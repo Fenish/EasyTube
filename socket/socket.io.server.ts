@@ -15,9 +15,9 @@ export default defineNitroPlugin(async () => {
     socket.on(VideoEvents.get_data, async (message: { url: string }) => {
       try {
         const video = await ytdl.getInfo(message.url);
-        if (parseInt(video.videoDetails.lengthSeconds) > 1200) {
+        if (parseInt(video.videoDetails.lengthSeconds) > 3600) {
           socket.emit(VideoEvents.video_info, {
-            error: "Video length must be less than 20 minutes",
+            error: "Video length must be less than a hour",
           });
           return;
         }
