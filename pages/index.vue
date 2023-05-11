@@ -3,6 +3,7 @@ const { $io } = useNuxtApp();
 if (process.client) {
   $io.connect();
 }
+const config = useRuntimeConfig().public;
 useHead(() => ({
   title: "EasyTube - Youtube Converter",
   meta: [
@@ -15,7 +16,7 @@ useHead(() => ({
     {
       id: "og:image",
       property: "og:image",
-      content: useRuntimeConfig().public.BASE_URL + "/_nuxt/logo.a014029a.png",
+      content: config.BASE_URL + "/_nuxt/logo.a014029a.png",
     },
   ],
   htmlAttrs: {
@@ -23,7 +24,6 @@ useHead(() => ({
   },
   link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }],
 }));
-
 const videoUrl = ref("");
 const videoFormat = ref("MP3");
 const errorState = ref(false);

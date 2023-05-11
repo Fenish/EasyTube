@@ -2,7 +2,7 @@
 export default defineNuxtConfig({
   runtimeConfig: {
     public: {
-      BASE_URL: process.env.BASE_URL || "http://localhost",
+      BASE_URL: process.env.BASE_URL || "http://localhost:3000",
       SOCKET_PORT: 5000,
       SOCKET_URL: process.env.SOCKET_URL || "http://localhost:5000",
     },
